@@ -1,0 +1,8 @@
+1:引入tdmsp项目，配置application.properties,生成根证书
+2:由根证书，签发共识节点的组织证书，例如，共识节点可以设定一个组织为：node,只有此组织的成员，才能参与共识，
+  后续加入的共识节点，也需要进行此组织验证。
+  共识节点在进行每次共识时，可以考虑增加验证节点的组织是否为 node
+3:创世节点启动时，配置msp.properties,acl.json,msp.proerties中的根证书上链，acl.json上链。
+4:共识节点在收到交易请求时，调用TdMSPIdentity.validate方法进行验证，通过后再进行下一下操作。
+5:MSPTest中有测试用例供参考
+6:处理addTrans方法时，要过滤关于根证书、acl等需要特殊权限的key

@@ -1,0 +1,31 @@
+{
+	"aclMap": {
+		"updateACLMsp": ["Admins"],
+		"getNewTransByKey": ["Reads", "Writes"],
+		"getBlock": ["Reads", "Writes"],
+		"getTransByHash": ["Reads", "Writes"],
+		"getACLMsp": ["Admins"],
+		"getTransHistoryByKey": ["Reads", "Writes"],
+		"addTrans": ["Writes"],
+		"getMaxBlock": ["Reads", "Writes"],
+		"getTransListByHashList": ["Reads", "Writes"]
+	},
+	"crlList": ["crl1", "crl2","1547431528037_1"],
+	"ouList": ["ou1", "ou2","sm2OU1"],
+	"policiesList": [{
+		"policiesList": ["sale", "purchase", "logistics"],
+		"policiesName": "Reads",
+		"policiesRule": "OR",
+		"policiesType": "Signature"
+	}, {
+		"policiesList": ["development", "finance","sm2OU1"],
+		"policiesName": "Writes",
+		"policiesRule": "OR",
+		"policiesType": "Signature"
+	}, {
+		"policiesList": ["admin1", "admin2"],
+		"policiesName": "Admins",
+		"policiesRule": "OR",
+		"policiesType": "Signature"
+	}]
+}
