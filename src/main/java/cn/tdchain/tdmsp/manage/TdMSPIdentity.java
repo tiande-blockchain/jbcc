@@ -23,19 +23,15 @@ import cn.tdchain.tdmsp.util.EccUtil;
 import cn.tdchain.tdmsp.util.PkiConstant;
 
 /**
- *
- *
  * @version 1.0
  * @author jiating 2019-01-08
  */
 public class TdMSPIdentity {
-//    protected static final  Logger log = LoggerFactory.getLogger(TdMSPIdentity.class);
-    
     public TdMSPMsg validate(String msg,String signMsg,X509Certificate cert,String method,TdMSPAcl tdMSPAcl,X509Certificate rootCert,String cipherType) {
         TdMSPMsg tdMSPMsg = new TdMSPMsg();
         
         //校验证书
-        tdMSPMsg = validateCert(rootCert,cert);
+        tdMSPMsg = validateCert(rootCert, cert);
          if(tdMSPMsg.getType() != 0 ) {
              return tdMSPMsg;
          }
@@ -69,8 +65,6 @@ public class TdMSPIdentity {
         
         return tdMSPMsg;
     }
-    
-   
 
     /**
      * @param tdMSPAcl
@@ -121,7 +115,7 @@ public class TdMSPIdentity {
     /**
      * @param tdMSPAcl
      * @param method
-     * @return
+     * @return ArrayList<String>
      */
     public ArrayList<String> getPoliciesByMethod(TdMSPAcl tdMSPAcl,
                                                   String method) {
@@ -136,8 +130,8 @@ public class TdMSPIdentity {
     
     /**
      * @param tdMSPAcl
-     * @param cert
-     * @return
+     * @param ou
+     * @return TdMSPMsg
      */
     public TdMSPMsg checkOU(TdMSPAcl tdMSPAcl, String  ou) {
         TdMSPMsg tdMSPMsg = new TdMSPMsg();
@@ -156,7 +150,7 @@ public class TdMSPIdentity {
     /**
      * @param tdMSPAcl
      * @param cert
-     * @return
+     * @return TdMSPMsg
      */
     public TdMSPMsg checkOU(TdMSPAcl tdMSPAcl, X509Certificate cert) {
         TdMSPMsg tdMSPMsg = new TdMSPMsg();
@@ -175,7 +169,7 @@ public class TdMSPIdentity {
 
     /**
      * @param cert
-     * @return
+     * @return String
      */
     public String getOUFromCert(X509Certificate cert) {
         String ou = "";
@@ -208,11 +202,12 @@ public class TdMSPIdentity {
     }
 
     /**
-     * 验证信息的签名是否匹配
+     * Description: 验证信息的签名是否匹配
      * @param msg
      * @param signMsg
      * @param cert
-     * @return
+     * @param cipherType
+     * @return TdMSPMsg
      */
     public TdMSPMsg verifySignMsg(String msg, String signMsg,
                                    X509Certificate cert,String cipherType) {
@@ -251,13 +246,15 @@ public class TdMSPIdentity {
         return tdMSPMsg;
     }
 
-    /*
-     *校验证书是否由相应的根证书生成
-     * */
+    /**
+     * Description:校验证书是否由相应的根证书生成
+     * @param rootCert
+     * @param cert
+     * @return TdMSPMsg
+     */
     @SuppressWarnings("finally")
     public TdMSPMsg validateCert(X509Certificate rootCert,X509Certificate cert) {
         TdMSPMsg tdMSPMsg = new TdMSPMsg();
-        
         try {
             
             cert.verify(rootCert.getPublicKey());

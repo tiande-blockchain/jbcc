@@ -19,7 +19,6 @@ public class NioRpcResponseClient extends NioAbstractClient {
 
     /**
      * Send message.
-     *
      * @param msg message
      */
     public void send(String msg) {

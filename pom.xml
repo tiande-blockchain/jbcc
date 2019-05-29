@@ -2,45 +2,29 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 	<groupId>cn.tdchain</groupId>
 	<artifactId>jbcc</artifactId>
-	<version>2.0.0</version>
-	
+	<version>2.0.3</version>
+
 	<properties>
-	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-    </properties>
+	</properties>
 
 	<dependencies>
-	
-	  <!-- <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-logging</artifactId>
-				</exclusion>
-			</exclusions>
-	    </dependency> -->
-  	    <!-- <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency> -->
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
-       <!-- <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-         -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>1.2.30</version>
 		</dependency>
 
-		 <dependency>
+		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcpkix-jdk15on</artifactId>
 			<version>1.60</version>
@@ -51,55 +35,93 @@
 			<version>2.6.0</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-lang3</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 			<version>3.7</version>
 		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.1.28.Final</version>
+		</dependency>
 
-
 		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-common</artifactId>
-			<version>4.1.28.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-buffer</artifactId>
-			<version>4.1.28.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-handler</artifactId>
-			<version>4.1.28.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-transport</artifactId>
-			<version>4.1.28.Final</version>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
 		</dependency>
 	</dependencies>
-	
-	<distributionManagement>
-		<repository>
-			<id>nexus</id>
-			<name>Releases</name>
-			<url>http://192.168.0.193:8081/repository/maven-releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>nexus</id>
-			<name>Snapshot</name>
-			<url>http://192.168.0.193:8081/repository/maven-snapshots/</url>
-		</snapshotRepository>
-    </distributionManagement>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>tiande jbcc</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<tag>master</tag>
+		<url>git@github.com/tiande-blockchain/jbcc.git</url>
+		<connection>scm:git:git@github.com/tiande-blockchain/jbcc.git</connection>
+		<developerConnection>scm:git:git@github.com/tiande-blockchain/jbcc.git</developerConnection>
+	</scm>
+	<developers>
+		<developer>
+			<name>tiande</name>
+			<email>cloud-blockchain@tiandetech.com</email>
+			<organization>tiande</organization>
+		</developer>
+	</developers>
 
 	<build>
 		<plugins>
+			<!--打包源码 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<additionalparam>-Xdoclint:none</additionalparam>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!--跳过测试 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19.1</version>
+				<configuration>
+					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
 		</plugins>

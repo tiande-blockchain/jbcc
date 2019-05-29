@@ -1,10 +1,14 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.jbcc;
 
 
 /**
- * @Description: 事务对象
+ * Description: 事务对象
  * @author xiaoming
- * @date:下午4:08:33
+ * 2019年4月18日
  */
 class Transaction {
 	private String keyName = null; //key'key'

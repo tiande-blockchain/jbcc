@@ -6,16 +6,16 @@ package cn.tdchain.cipher.utils;
 
 import cn.tdchain.jbcc.SQLCheckUtil;
 /**
- * @Description: hash字符串验证，是否合法。
+ * hash字符串验证，是否合法。
  * @author xiaoming
- * @date:下午2:26:37
+ * 2019年4月18日
  */
 public class HashCheckUtil {
 	/**
-	 * @Description: 是正常的hash字符串返回true
+	 * hashCheck是正常的hash字符串返回true
+	 * 
 	 * @param hash
 	 * @return
-	 * @throws
 	 */
 	public static boolean hashCheck(String hash) {
 		if(hash == null || SQLCheckUtil.checkSQLError(hash) || illegalCharacterCheck(hash)) {
@@ -26,10 +26,9 @@ public class HashCheckUtil {
 	}
 	
 	/**
-	 * @Description: 是否包含特殊字符
+	 * illegalCharacterCheck是否包含特殊字符
 	 * @param data
 	 * @return
-	 * @throws
 	 */
 	public static boolean illegalCharacterCheck(String data) {
 		if(data == null) {

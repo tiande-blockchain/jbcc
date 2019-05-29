@@ -7,8 +7,9 @@ package cn.tdchain.jbcc.rpc;
 import java.util.HashMap;
 
 /**
- ** 黑名单
+ * 黑名单
  * @author xiaoming
+ * 2019年4月18日
  */
 public class BlackList {
 	private static HashMap<String, Integer> blackList = new HashMap<String, Integer>();

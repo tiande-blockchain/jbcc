@@ -1,16 +1,17 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.jbcc;
 
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.swing.SingleSelectionModel;
-
-
 /**
- * @Description: 事务管理池
+ * Description: 事务管理池
  * @author xiaoming
- * @date:下午4:38:53
+ * 2019年4月18日
  */
 class ManagerTransactionPool {
 	public static String TRANSACTION_SPLIT_CHAR = "'";
@@ -68,10 +69,10 @@ class ManagerTransactionPool {
 	}
 	
 	/**
-	 * @Description: 判断key数组中 所有的key是否已经存在？全部不存在返回false/只少有一个key存在返回true
+	 * Description: 判断key数组中 所有的key是否已经存在？全部不存在返回false/只少有一个key存在返回true
 	 * @param keys
-	 * @return
-	 * @throws
+	 * @param t
+	 * @return boolean
 	 */
 	private static synchronized boolean addKeyIsNotExist(String[] keys, Transaction t) {
 		for(int i = 0; keys != null && i < keys.length; i++) {
@@ -91,10 +92,10 @@ class ManagerTransactionPool {
 	} 
 	
 	/**
-	 * @Description: 注册事务，成功返回true/失败返回false。 如果超过超时时间还没成功的话直接返回false
+	 * Description: 注册事务，成功返回true/失败返回false。 如果超过超时时间还没成功的话直接返回false
 	 * @param t
-	 * @return
-	 * @throws
+	 * @param timeOut
+	 * @return boolean
 	 */
 	public static boolean register(Transaction t, long timeOut) {
 		boolean flag = false;
@@ -120,26 +121,8 @@ class ManagerTransactionPool {
 		return flag;
 	}
 	
-	/**
-	 * @Description: 
-	 * @param t
-	 * @throws
-	 */
 	public static void destroy(Transaction t) {
 		removeTransaction(t);
 	}
-	
-	
-//	public static void main(String[] args) {
-//		
-//		Transaction t = new Transaction(new String[] {"A","A"});
-////		boolean is = ManagerTransactionPool.register(t, 3000);
-////		System.out.println(is);
-//		ManagerTransactionPool.destroy(t);
-//		
-//		boolean is2 = ManagerTransactionPool.register(t, 7000);
-//		System.out.println(is2);
-//		
-//	}
 	
 }

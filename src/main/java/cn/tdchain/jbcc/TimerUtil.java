@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.jbcc;
 
 import java.util.concurrent.Callable;
@@ -5,13 +9,11 @@ import java.util.concurrent.Callable;
 public class TimerUtil {
 
     /**
-     * 重复间隔的执行代码,直到返回结果
-     *
-     * @param mills    间隔时间
-     * @param times    执行次数
-     * @param callable 逻辑代码
-     * @param <T>
-     * @return
+     * Description: 重复间隔的执行代码,直到返回结果
+     * @param mills
+     * @param times
+     * @param callable
+     * @return <T> T
      */
     public static <T> T exec(long mills, int times, Callable<T> callable) {
         T call = null;

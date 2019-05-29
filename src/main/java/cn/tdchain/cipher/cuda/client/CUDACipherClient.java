@@ -101,7 +101,7 @@ public class CUDACipherClient {
 	 * AES encrypt
 	 * @param text
 	 * @param passwd
-	 * @return
+	 * @return String
 	 */
 	public String aes_encrypt(String text, String passwd) {
 		TDRpcClient client = pool.getClient();
@@ -135,7 +135,7 @@ public class CUDACipherClient {
 	 * AES decrypt
 	 * @param cipherText
 	 * @param passwd
-	 * @return
+	 * @return String
 	 */
 	public String aes_decrypt(String cipherText, String passwd) {
 		TDRpcClient client = pool.getClient();
@@ -157,7 +157,7 @@ public class CUDACipherClient {
 	/**
 	 * sha 256 hash
 	 * @param text
-	 * @return
+	 * @return String
 	 */
 	public String hash_256(String text) {
 		TDRpcClient client = pool.getClient();
@@ -174,7 +174,7 @@ public class CUDACipherClient {
 	 * rsa 1024 key decrypt
 	 * @param cipherText
 	 * @param privateKey
-	 * @return
+	 * @return String
 	 */
 	public String rsa_decrypt(String cipherText, String privateKey) {
 //		TDRpcClient client = pool.getClient();

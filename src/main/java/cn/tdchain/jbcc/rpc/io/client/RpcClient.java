@@ -19,7 +19,7 @@ import cn.tdchain.jbcc.rpc.io.eclc.EclcSocket;
 
 /**
  * rpc client. 非线程安全的链接，底层采用对口令长连接协议。
- * 
+ *
  * @version 2.0
  * @author Xiaoming 2017-12-14
  */
@@ -31,20 +31,25 @@ public class RpcClient {
     private int port;
     private int timeOut = 3000;
     private EclcSocket socket = null;
+	private String connectionId;
 
     /**
      * Constructor.
-     * 
-     * @param address String
-     * @param port int
-     * @param timeOut int, default 3000
-     * @throws Exception 
+     * @param address
+     * @param port
+     * @param timeOut
+     * @param token
+     * @param connectionId
+     * @param clientPublicKey
+     * @throws IOException
+     * @throws Exception
      */
-    public RpcClient(String address, int port, int timeOut, String token, String clientPublicKey) throws IOException,Exception {
+    public RpcClient(String address, int port, int timeOut, String token, String connectionId,String clientPublicKey) throws IOException,Exception {
         this.address = address;
         this.port = port;
         this.timeOut = timeOut;
         this.token = token;
+        this.connectionId = connectionId;
         this.clientPublicKey = clientPublicKey;
 
         /* Start to connection */
@@ -56,7 +61,7 @@ public class RpcClient {
 			close(null);
 		}
 		if (socket == null) {
-			socket = new EclcSocket(this.clientPublicKey);
+			socket = new EclcSocket(this.clientPublicKey,connectionId);
 			socket.connect(new InetSocketAddress(this.address, this.port), timeOut, this.token);// 复杂密码提升网络安全
 			socket.setTcpNoDelay(true);
 			socket.setSoTimeout(timeOut);
@@ -67,8 +72,10 @@ public class RpcClient {
 
     /**
      * Send message.
-     * 
-     * @param msg message
+     * @param msg
+     * @throws SocketException
+     * @throws IOException
+     * @throws Exception
      */
     public void send(String msg) throws  SocketException, IOException, Exception {
 		if (socket == null || socket.isClosed() || !socket.isConnected()) {
@@ -80,12 +87,15 @@ public class RpcClient {
 		oos.newLine();
 		oos.flush();
     }
-    
+
     /**
      * Send a request and wait response.
      * 
-     * @param msg String
-     * @return response String
+     * @param msg
+     * @return String
+     * @throws SocketException
+     * @throws IOException
+     * @throws Exception
      */
     public String sendAndReturn(String msg) throws  SocketException, IOException, Exception{
 		if (socket == null || socket.isClosed() || !socket.isConnected()) {
@@ -117,7 +127,7 @@ public class RpcClient {
     	if(e != null) {
     		e.printStackTrace();
     	}
-    	
+
         IOUtils.close(socket);
         socket = null;
     }
@@ -127,11 +137,10 @@ public class RpcClient {
 	}
 
 	/**
-	 * @throws Exception 
-	 * @throws IOException 
-	 * @Description: 一直read line等待
-	 * @return
-	 * @throws
+	 * Description: 一直read line等待
+	 * @return String
+	 * @throws IOException
+	 * @throws Exception
 	 */
 	public String readResult() throws IOException, Exception {
 		if (socket == null || socket.isClosed() || !socket.isConnected()) {
@@ -145,5 +154,5 @@ public class RpcClient {
 		return bfr.readLine();
 	}
 
-    
+
 }

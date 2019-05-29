@@ -10,17 +10,14 @@ import java.util.List;
 /**
  * Merkle util
  * @author xiaoming
- * @date: 2018年10月31日 下午2:13:18
+ * 2019年4月18日
  */
 public class MerkleUtil {
 	
 	/**
-	 * @Title: getMerkleRoot   
-	 * @Description: get a merkle root String  
-	 * @param: @param hashList
-	 * @param: @return      
-	 * @return: String      
-	 * @throws
+	 * get a merkle root String  
+	 * @param hashList
+	 * @return String
 	 */
 	public static String getMerkleRoot(List<String> hashList) {
 		String merkleRoot = "";

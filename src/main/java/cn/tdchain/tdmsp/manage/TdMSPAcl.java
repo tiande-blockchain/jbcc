@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- *
- *
  * @version 1.0
  * @author jiating 2019-01-08
  */
@@ -48,9 +46,4 @@ public class TdMSPAcl {
         this.aclMap = aclMap;
     }
    
-    
-    
-    
-    
-    
 }

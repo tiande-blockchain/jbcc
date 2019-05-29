@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.jbcc.rpc.nio.handler;
 
 import cn.tdchain.jbcc.net.nio.NioNet;
@@ -15,6 +19,7 @@ public class NioPoolableRpcClientFactory extends BasePooledObjectFactory<NioRpcC
     private String token = null;
     private int port;
     private long timeout = -1L;
+    private String connectionId;
 
     private NioNet.NioTask task;
 
@@ -25,13 +30,14 @@ public class NioPoolableRpcClientFactory extends BasePooledObjectFactory<NioRpcC
         this.port = config.getPort();
         this.timeout = config.getTimeout();
         this.token = config.getToken();
+        this.connectionId = config.getConnectionId();
         this.clientPublicKey = config.getClientPublicKey();
         this.task = task;
     }
 
     @Override
     public NioRpcClient create() {
-        NioRpcClient client = new NioRpcClient(channelFactory, address, port, timeout, token, clientPublicKey);
+        NioRpcClient client = new NioRpcClient(channelFactory, address, port, timeout, token, connectionId, clientPublicKey);
         //client.getChannel().pipeline().get(ReceiveSysMessageChannelHandler.class).setTask(task);
         return client;
     }

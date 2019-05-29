@@ -5,7 +5,6 @@
 package cn.tdchain.tdmsp.manage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.alibaba.fastjson.JSON;
 
@@ -13,8 +12,6 @@ import cn.tdchain.tdmsp.ca.config.PoliciesRule;
 import cn.tdchain.tdmsp.ca.config.PoliciesType;
 
 /**
- *
- *
  * @version 1.0
  * @author jiating 2019-01-08
  */
@@ -61,7 +58,5 @@ public class Policies {
     public String toString() {
         return JSON.toJSONString(this);
     }
-    
-    
     
 }

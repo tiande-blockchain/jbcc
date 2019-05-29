@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017-2018 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.cipher.utils;
 
 public class CipherUtil {

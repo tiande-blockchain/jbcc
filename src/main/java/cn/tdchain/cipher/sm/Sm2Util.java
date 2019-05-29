@@ -54,10 +54,8 @@ public final class Sm2Util {
 
     /**
      * Generate SM2 keys.
-     * 
      * @return KeyPair
-     * @throws Exception NoSuchAlgorithmException, NoSuchProviderException,
-     *             InvalidAlgorithmParameterException
+     * @throws Exception
      */
     public static KeyPair generateSm2KeyPair() throws Exception {
         KeyPairGenerator g = KeyPairGenerator.getInstance(EC,
@@ -70,9 +68,9 @@ public final class Sm2Util {
     /**
      * SM2私钥字符串转换为对象.
      * 
-     * @param privateKeyStr private key string
+     * @param privateKeyStr
      * @return PrivateKey
-     * @throws Exception InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException
+     * @throws Exception
      */
     public static PrivateKey getPrivateKey(String privateKeyStr)
         throws Exception {
@@ -89,9 +87,9 @@ public final class Sm2Util {
     /**
      * SM2公钥字符串转换为对象.
      * 
-     * @param publicKeyStr public key string
+     * @param publicKeyStr
      * @return PublicKey
-     * @throws Exception InvalidKeySpecException, NoSuchAlgorithmException, NoSuchProviderException
+     * @throws Exception
      */
     public static PublicKey getPublicKey(String publicKeyStr) throws Exception {
         if (StringUtils.isBlank(publicKeyStr)) {
@@ -106,11 +104,11 @@ public final class Sm2Util {
 
     /**
      * SM2公钥加密.
-     *
-     * @param publicKey public key
-     * @param src source data
-     * @return SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
-     * @throws Exception encrypt exception
+     * 
+     * @param publicKey
+     * @param src
+     * @return String
+     * @throws Exception
      */
     public static String encrypt(PublicKey publicKey, String src)
         throws Exception {
@@ -140,11 +138,11 @@ public final class Sm2Util {
 
     /**
      * SM2私钥解密.
-     *
-     * @param privateKey private key
-     * @param src SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
-     * @return 原文
-     * @throws Exception decrypt exception
+     * 
+     * @param privateKey
+     * @param src
+     * @return String
+     * @throws Exception
      */
     public static String decrypt(PrivateKey privateKey, String src)
         throws Exception {
@@ -172,11 +170,11 @@ public final class Sm2Util {
 
     /**
      * SM2私钥签名.
-     *
-     * @param privateKey private key
-     * @param src source data String
-     * @return signature
-     * @throws Exception signature exception
+     * 
+     * @param privateKey
+     * @param src
+     * @return String
+     * @throws Exception
      */
     public static String sign(PrivateKey privateKey, String src)
         throws Exception {
@@ -207,11 +205,11 @@ public final class Sm2Util {
 
     /**
      * SM2公钥验签.
-     *
-     * @param publicKey public key
-     * @param src source data String
-     * @param sign signature
-     * @return verify result: true or false
+     * 
+     * @param publicKey
+     * @param sign
+     * @param src
+     * @return boolean
      */
     public static boolean verify(PublicKey publicKey, String sign, String src) {
         if (StringUtils.isBlank(src) || StringUtils.isBlank(sign)
@@ -241,7 +239,7 @@ public final class Sm2Util {
     /**
      * @param publicKey
      * @param data
-     * @return
+     * @return String
      */
     public static String encrypt(String publicKey, String data) {
         String str = null;
@@ -260,7 +258,7 @@ public final class Sm2Util {
     /**
      * @param privateKey
      * @param data
-     * @return
+     * @return String
      */
     public static String decrypt(String privateKey, String data) {
         String str = null;
@@ -279,7 +277,7 @@ public final class Sm2Util {
     /**
      * @param privateKeyStr
      * @param data
-     * @return
+     * @return String
      */
     public static String sign(String privateKeyStr, String data) {
         String str = null;
@@ -298,7 +296,7 @@ public final class Sm2Util {
      * @param publickey
      * @param signature
      * @param data
-     * @return
+     * @return String
      */
     public static boolean verify(String publickey, String signature,
                                 String data) {

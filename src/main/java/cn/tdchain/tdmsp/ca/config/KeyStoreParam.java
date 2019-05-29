@@ -48,16 +48,16 @@ public class KeyStoreParam {
 
     /**
      * Constructor.
-     * 
-     * @param ecertAlias String
-     * @param rootAlias String
-     * @param keyAlias String
-     * @param certPassword String
-     * @param ksPassword String
-     * @param path key store path
-     * @param fileName key store file name
-     * @param chain X509Certificate[]
-     * @param cipherType cipher type
+     * @param certAlias
+     * @param rootAlias
+     * @param privateKeyAlias
+     * @param privateKeyPassword
+     * @param ksPassword
+     * @param path
+     * @param fileName
+     * @param chain
+     * @param cipherType
+     * @param validTime
      */
     public KeyStoreParam(String certAlias, String rootAlias, String privateKeyAlias,
             String privateKeyPassword, String ksPassword, String path,

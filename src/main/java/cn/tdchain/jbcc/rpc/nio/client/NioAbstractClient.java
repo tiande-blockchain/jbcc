@@ -14,7 +14,9 @@ public abstract class NioAbstractClient {
     }
 
     public void close() {
-        nioRpcClient.close();
+        if (nioRpcClient != null) {
+            nioRpcClient.close();
+        }
     }
 
     public boolean isActive() {

@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * Date Utility.
  * @author xiaoming
- * @date: 2018年11月20日 下午2:12:42
+ * 2019年4月18日
  */
 public class DateUtils {
 
@@ -24,9 +24,7 @@ public class DateUtils {
 
     /**
      * Get current time with pattern parameter.
-     * 
-     * @param pattern format pattern
-     * @return formatted current time
+     * @return String
      */
     public static String getCurrentTime() {
     	SimpleDateFormat f = new SimpleDateFormat(TIME_STAMP_SPACE);
@@ -34,12 +32,8 @@ public class DateUtils {
     }
     
     /**
-     * @Title: getCurrentTime   
-     * @Description:  
-     * @param: @param data
-     * @param: @return      
-     * @return: long      
-     * @throws
+     * @param data
+     * @return long
      */
     public static long getTime(String data) {
     	try {

@@ -4,7 +4,6 @@
  */
 package cn.tdchain.tdmsp.manage;
 
-
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 
@@ -20,14 +19,11 @@ import cn.tdchain.tdmsp.util.PkiConstant;
 import cn.tdchain.tdmsp.util.PkiUtil;
 
 /**
- *
- *
  * @version 1.0
  * @author jiating 2019-01-07
  */
 public class TdMSPManage {
     
-//    protected static final  Logger log = LoggerFactory.getLogger(TdMSPManage.class);
     private static final String ACLPATH = "./src/main/resources/acl.json";
     private static MspConfig mspConfig;
     private static TdMSPAcl tdMSPAcl;

@@ -4,8 +4,6 @@
  */
 package cn.tdchain.cipher.rsa;
 
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -77,11 +75,7 @@ public class RsaUtil{
     }
     
     /**
-     * @Title: generKey   
-     * @Description: 生成rsa 公私钥
-     * @param: @return      
-     * @return: KeyPair      
-     * @throws
+     * @return KeyPair
      */
     public static KeyPair generKey() {
     	KeyPair keyPair = null;
@@ -97,9 +91,10 @@ public class RsaUtil{
     }
 
     /**
-     * @Description:Encrypt by UTF-8.
-     * @param data String
-     * @param key cipher key
+     * Encrypt by UTF-8.
+     * 
+     * @param data
+     * @param key
      * @return String
      */
     public static String encrypt(String data, PublicKey key) {
@@ -124,22 +119,18 @@ public class RsaUtil{
     }
     
     /**
-     * @Title: getPublicKey   
-     * @Description:   
-     * @param: @param publicKey
-     * @param: @return      
-     * @return: String      
-     * @throws
+     * getPublicKey  
+     * 
+     * @param publicKey
+     * @return String
      */
     public static String getPublicKey(PublicKey publicKey) {
     	return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
     
     /**
-     * @Description: 
      * @param privateKey
-     * @return
-     * @throws
+     * @return String
      */
     public static String getPrivateKey(PrivateKey privateKey) {
     	return Base64.getEncoder().encodeToString(privateKey.getEncoded());
@@ -147,12 +138,11 @@ public class RsaUtil{
     
     
     /**
-     * @Description:Get public key.
-     * @param publicKeyStr String
-     * @return public key
-     * @throws NoSuchAlgorithmException 
-     * @throws InvalidKeySpecException 
-     * @throws Exception multiply exceptions
+     * 
+     * @param publicKeyStr
+     * @return PublicKey
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
      */
     public static PublicKey getPublicKey(String publicKeyStr) throws NoSuchAlgorithmException, InvalidKeySpecException  {
     	PublicKey pubkey = publicKeyMap.get(publicKeyStr);
@@ -170,9 +160,10 @@ public class RsaUtil{
     }
 
     /**
-     * @Description:RSA解密 2017年2月4日 xiaoming.
-     * @param data String
-     * @param key Key
+     * RSA解密 2017年2月4日 xiaoming.
+     * 
+     * @param data
+     * @param key
      * @return String
      */
     public static String decrypt(String data, Key key) {
@@ -213,10 +204,11 @@ public class RsaUtil{
     }
 
     /**
-     * @Description:签名函数,byte数组最终以16进制显示.
-     * @param text 明文
-     * @param privateKey private key
-     * @return signed text
+     * sign签名函数,byte数组最终以16进制显示.
+     * 
+     * @param privateKey
+     * @param text
+     * @return String
      */
     public static String sign(PrivateKey privateKey, String text) {
         if (privateKey == null) {
@@ -235,11 +227,12 @@ public class RsaUtil{
     }
 
     /**
-     * @Description: 验签.
-     * @param signText 签名后的密文
-     * @param text 明文
-     * @param publicKey public key
-     * @return true if pass the validation
+     * verify验签.
+     * 
+     * @param publicKey
+     * @param signText
+     * @param text
+     * @return boolean
      */
     public static boolean verify(PublicKey publicKey, String signText,
                                  String text) {
@@ -270,11 +263,11 @@ public class RsaUtil{
     }
     
     /**
-     * @Description: 公钥加密
+     * encrypt公钥加密
+     * 
      * @param data
      * @param publicKey
-     * @return
-     * @throws
+     * @return String
      */
 	public static String encrypt(String data, String publicKey) {
 		PublicKey pubKey;
@@ -286,12 +279,12 @@ public class RsaUtil{
 		}
 	}
 	/**
-	 * @Description: 公钥验签
+	 * verify公钥验签
+	 * 
 	 * @param publickey
 	 * @param signature
 	 * @param data
-	 * @return
-	 * @throws
+	 * @return boolean
 	 */
 	public static boolean verify(String publickey, String signature, String data) {
 		PublicKey pubKey;
@@ -312,12 +305,9 @@ public class RsaUtil{
 		return privKey;
 	}
 	/**
-	 * @throws Exception 
-	 * @Description: 
 	 * @param data
 	 * @param privateKey
-	 * @return
-	 * @throws
+	 * @return String
 	 */
 	public static String decrypt(String data, String privateKey) {
 		if(isCuda) {
@@ -335,12 +325,10 @@ public class RsaUtil{
 	}
 	
 	/**
-	 * @throws Exception 
-	 * @Description: 
+	 * sign
 	 * @param privateKeyStr
 	 * @param data
-	 * @return
-	 * @throws
+	 * @return String
 	 */
 	public static String sign(String privateKeyStr, String data) {
 		try {

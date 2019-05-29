@@ -1,11 +1,15 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.jbcc.rpc.io.eclc;
 
 import java.net.Socket;
 
 /**
- * @Description: 包装Socket对象，存储客户端的公钥信息。
+ * Description: 包装Socket对象，存储客户端的公钥信息。
  * @author xiaoming
- * @date:下午7:02:30
+ * 2019年4月18日
  */
 public class ClientSocket {
 	private Socket socket;

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.tdmsp.util;
 
 import java.io.DataInputStream;
@@ -31,8 +35,6 @@ public class LinuxSecureRandom extends SecureRandomSpi {
 
     private static final long serialVersionUID = 208702708372565523L;
 
-//    private static final Logger log = LoggerFactory
-//            .getLogger(LinuxSecureRandom.class);
     private static final FileInputStream RANDOM;
     private final DataInputStream dis;
 

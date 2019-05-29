@@ -97,7 +97,7 @@ public class Sm4Util {
     /**
      * @param data
      * @param passwd
-     * @return
+     * @return String
      */
     public static String encryptECB(String data, String passwd) {
         String encryptStr = null;
@@ -117,7 +117,7 @@ public class Sm4Util {
     /**
      * @param data
      * @param passwd
-     * @return
+     * @return String
      */
     public static String decryptECB(String data, String passwd) {
         String decryptStr = null;

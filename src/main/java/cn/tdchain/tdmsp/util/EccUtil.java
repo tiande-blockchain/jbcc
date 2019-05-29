@@ -18,7 +18,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
-import java.security.SignatureException;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECGenParameterSpec;
@@ -34,13 +33,8 @@ import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
 
 import cn.tdchain.cipher.utils.StringUtils;
-
 
 
 /**
@@ -51,7 +45,6 @@ import cn.tdchain.cipher.utils.StringUtils;
  */
 public final class EccUtil {
 
-//    private static final Logger log = LoggerFactory.getLogger(EccUtil.class);
     private static final Charset UTF8 = StandardCharsets.UTF_8;
     private static Signature signature;
 
@@ -68,10 +61,9 @@ public final class EccUtil {
 
     /**
      * Encryption by key in UTF-8.
-     * 
-     * @param data source data
-     * @param ecPublicKey public key
-     * @return encrypted String
+     * @param data
+     * @param ecPublicKey
+     * @return String
      */
     public static String encrypt(String data, ECPublicKey ecPublicKey) {
         if (StringUtils.isBlank(data) || ecPublicKey == null) {
@@ -93,10 +85,10 @@ public final class EccUtil {
     /**
      * Get public key by string.
      * 
-     * @param publicKey ECPublicKey string
+     * @param publicKey
      * @return ECPublicKey
-     * @throws NoSuchAlgorithmException exception
-     * @throws InvalidKeySpecException exception
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
      */
     public static ECPublicKey getPublicKey(String publicKey)
         throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -123,9 +115,9 @@ public final class EccUtil {
     /**
      * Decryption by key in UTF-8.
      * 
-     * @param data String
-     * @param privateKey private key
-     * @return decrypted String
+     * @param data
+     * @param privateKey
+     * @return String
      */
     public static String decrypt(String data, ECPrivateKey privateKey) {
         if (privateKey == null || StringUtils.isBlank(data)) {
@@ -147,11 +139,10 @@ public final class EccUtil {
 
     /**
      * Get private key by string.
-     * 
-     * @param privateKey ECPrivateKey string
+     * @param privateKey
      * @return ECPrivateKey
-     * @throws NoSuchAlgorithmException exception
-     * @throws InvalidKeySpecException exception
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
      */
     public static ECPrivateKey getPrivateKey(String privateKey)
         throws NoSuchAlgorithmException, InvalidKeySpecException {

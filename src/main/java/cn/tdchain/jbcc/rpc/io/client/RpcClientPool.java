@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * rpc client pool. 线程安全的连接对象池，支持多线程高并发使用同一个 client pool.
- * 
+ *
  * @version 2.0
  * @author Xiaoming 2017-12-14
  */
@@ -21,48 +21,59 @@ public class RpcClientPool {
     private String addres;
     private int port;
     private int timeOut = 1000;
+    private String connectionId;
 
     private ConcurrentLinkedQueue<RpcClient> clientPool = new ConcurrentLinkedQueue<RpcClient>();
 
     /**
      * Constructor.
-     * 
-     * @param addres String
-     * @param port int
-     * @throws IOException 
+     * @param addres
+     * @param port
+     * @param token
+     * @param connectionId
+     * @param localPublicKey
+     * @throws IOException
+     * @throws Exception
      */
-    public RpcClientPool(String addres, int port, String token, String localPublicKey) throws IOException,Exception {
-        this(addres, port, 16, 1000, token, localPublicKey);
+    public RpcClientPool(String addres, int port, String token,String connectionId, String localPublicKey) throws IOException,Exception {
+        this(addres, port, 16, 1000, token, connectionId,localPublicKey);
     }
 
     /**
      * Constructor.
-     * 
-     * @param addres String
-     * @param port int
-     * @param maxPoolSize int
-     * @throws IOException 
+     * @param addres
+     * @param port
+     * @param maxPoolSize
+     * @param token
+     * @param connectionId
+     * @param localPublicKey
+     * @throws IOException
+     * @throws Exception
      */
-    public RpcClientPool(String addres, int port, int maxPoolSize, String token, String localPublicKey) throws IOException,Exception {
-        this(addres, port, maxPoolSize, 2000, token, localPublicKey);
+    public RpcClientPool(String addres, int port, int maxPoolSize, String token,String connectionId, String localPublicKey) throws IOException,Exception {
+        this(addres, port, maxPoolSize, 2000, token, connectionId,localPublicKey);
     }
 
     /**
      * Constructor.
-     * 
-     * @param addres String
-     * @param port int
-     * @param maxPoolSize int
-     * @param timeOut int, default 1000
-     * @throws IOException,Exception 
+     * @param addres
+     * @param port
+     * @param maxPoolSize
+     * @param timeOut
+     * @param token
+     * @param connectionId
+     * @param localPublicKey
+     * @throws IOException
+     * @throws Exception
      */
-    public RpcClientPool(String addres, int port, int maxPoolSize, int timeOut, String token, String localPublicKey) throws IOException,Exception {
+    public RpcClientPool(String addres, int port, int maxPoolSize, int timeOut, String token,String connectionId,String localPublicKey) throws IOException,Exception {
         this.addres = addres;
         this.port = port;
         this.maxPoolSize = maxPoolSize;
         this.timeOut = timeOut;
         this.token = token;
         this.localPublicKey = localPublicKey;
+        this.connectionId= connectionId;
 
         /* Init client pool */
         for (int i = 0; i < this.maxPoolSize; i++) {
@@ -72,16 +83,16 @@ public class RpcClientPool {
 
     private void newClient() throws IOException,Exception {
         if (clientPool.size() < this.maxPoolSize) {
-            RpcClient client = new RpcClient(this.addres, this.port, this.timeOut, this.token, this.localPublicKey);
+            RpcClient client = new RpcClient(this.addres, this.port, this.timeOut, this.token, connectionId,this.localPublicKey);
             clientPool.add(client);
         }
     }
 
     /**
-     * 拿走一个链接对象.
-     * 
-     * @return client
-     * @throws IOException 
+     * Description: 拿走一个链接对象.
+     * @return RpcClient
+     * @throws IOException
+     * @throws Exception
      */
     public synchronized RpcClient getClient() throws IOException,Exception{
             if (this.clientPool.size() < 1) {
@@ -91,9 +102,8 @@ public class RpcClientPool {
     }
 
     /**
-     * 归还链接对象.
-     * 
-     * @param client TDRpcClient
+     * Description: 归还链接对象.
+     * @param client
      */
     public synchronized void returnClient(RpcClient client) {
         if (client == null) {
@@ -108,7 +118,7 @@ public class RpcClientPool {
     }
 
     /**
-     * 销毁连接池.
+     * Description: 销毁连接池.
      */
     public void drop() {
         while (clientPool.size() > 0) {

@@ -7,7 +7,7 @@ package cn.tdchain.cipher;
 /**
  * 数字密码传输效率更好
  * @author xiaoming
- * @date: 2018年11月1日 下午5:12:16
+ * 2019年4月18日
  */
 public class DataCipher {
 	private String passwd;//单向加密算法的密码，会被rsa公钥加密后保存起来。
@@ -20,7 +20,9 @@ public class DataCipher {
 	 * 数字密钥：使用公钥对数据加密，在网络上传输保证安全。
 	 * @param passwd
 	 * @param data
+	 * @param privateKey
 	 * @param publicKey
+	 * @param cipher
 	 */
 	public DataCipher(String passwd, String data, String privateKey, String publicKey, Cipher cipher) {
 		// 1. 提取data的hash
@@ -38,12 +40,11 @@ public class DataCipher {
 	}
 	
 	/**
-	 * @Title: getData   
-	 * @Description: 使用私钥进行解密得出明文 
-	 * @param: @param privateKey
-	 * @param: @return      
-	 * @return: String      
-	 * @throws
+	 * Description: 使用私钥进行解密得出明文 
+	 * 
+	 * @param privateKey
+	 * @param cipher
+	 * @return String
 	 */
 	public String getData(String privateKey, Cipher cipher) {
 		String p = cipher.decryptByPrivateKey(this.passwd, privateKey);
@@ -56,11 +57,11 @@ public class DataCipher {
 	}
 	
 	/**
-	 * @Description: 对信息进行验签
+	 * Description: 对信息进行验签
+	 * 
 	 * @param senderPublicKey
 	 * @param cipher
-	 * @return
-	 * @throws
+	 * @return boolean
 	 */
 	public boolean verify(String senderPublicKey, Cipher cipher) {
 		String hash = cipher.hash(this.data);

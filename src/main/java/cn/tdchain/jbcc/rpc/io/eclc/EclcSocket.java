@@ -35,14 +35,16 @@ public class EclcSocket extends Socket {
 	private int timeOut = 5000;
 	private String serverPublicKey = null;
 	private String clientPubliKey = null;
-	
-	public EclcSocket(String localPubliKey) {
+	private String connectionId;
+
+	public EclcSocket(String localPubliKey,String connectionId) {
+		this.connectionId = connectionId;
 		this.clientPubliKey = localPubliKey;
 	}
-	
-	public EclcSocket(InetAddress address, int port, InetAddress localAddr, int localPort, String passwd, String localPubliKey) throws IOException {
+
+	public EclcSocket(InetAddress address, int port, InetAddress localAddr, int localPort, String passwd, String connectionId,String localPubliKey) throws IOException {
 		super(address, port, localAddr, localPort);
-		
+		this.connectionId = connectionId;
 		this.clientPubliKey = localPubliKey;
 		/*
 		 * eclc 口令验--》成功就允许建立长连接
@@ -51,9 +53,9 @@ public class EclcSocket extends Socket {
 		eclc(passwd);
 	}
 
-	public EclcSocket(InetAddress address, int port, String passwd, String localPubliKey) throws IOException {
+	public EclcSocket(InetAddress address, int port, String passwd, String connectionId,String localPubliKey) throws IOException {
 		super(address, port);
-		
+        this.connectionId = connectionId;
 		this.clientPubliKey = localPubliKey;
 		/*
 		 * eclc 口令验--》成功就允许建立长连接
@@ -62,9 +64,9 @@ public class EclcSocket extends Socket {
 		eclc(passwd);
 	}
 
-	public EclcSocket(String host, int port, InetAddress localAddr, int localPort, String passwd, String localPubliKey) throws IOException {
+	public EclcSocket(String host, int port, InetAddress localAddr, int localPort, String passwd, String connectionId,String localPubliKey) throws IOException {
 		super(host, port, localAddr, localPort);
-		
+        this.connectionId = connectionId;
 		this.clientPubliKey = localPubliKey;
 		/*
 		 * eclc 口令验--》成功就允许建立长连接
@@ -73,9 +75,9 @@ public class EclcSocket extends Socket {
 		eclc(passwd);
 	}
 
-	public EclcSocket(String host, int port, String passwd, String localPubliKey) throws UnknownHostException, IOException {
+	public EclcSocket(String host, int port, String passwd, String connectionId,String localPubliKey) throws UnknownHostException, IOException {
 		super(host, port);
-		
+        this.connectionId = connectionId;
 		this.clientPubliKey = localPubliKey;
 		/*
 		 * eclc 口令验--》成功就允许建立长连接
@@ -83,91 +85,97 @@ public class EclcSocket extends Socket {
 		 * */
 		eclc(passwd);
 	}
-	
-	
-	
+
+
+
 	public void connect(SocketAddress endpoint, int timeout, String passwd) throws IOException {
 		super.connect(endpoint, timeout);
 		eclc(passwd);
 	}
 
 	private void eclc(String passwd) {
-		if(this.isConnected()) {
-        	try {
-        		this.setSoTimeout(timeOut);//超时没有回复抛出EclcException异常
-        		OutputStreamWriter os = new OutputStreamWriter(this.getOutputStream());
-            	BufferedWriter bwrite = new BufferedWriter(os);
-            	InputStreamReader ir = new InputStreamReader(this.getInputStream());
-            	BufferedReader bread = new BufferedReader(ir);
-            	
-            	// 1. 随机明文用passwd进行加密并发送出去。
-//            	System.out.println("passwd=" + passwd);
-            	String data = UUID.randomUUID().toString();
-            	String data_chi = AesUtil.encrypt(data, passwd);
-            	bwrite.write(data_chi);
-            	bwrite.newLine();
-				bwrite.flush();
-            	
-            	// 2. 等服务端解密后把明文返回  超时失败推出
-//            	System.out.println("data=" + data);
-            	String result_data = bread.readLine();
-            	if(result_data != null) {
-            		String[] v_array = result_data.split(";");
-            		if(v_array != null && v_array.length ==2) {
-            			String s_v_dada = v_array[0]; // 
-            			String s_dada_chi = v_array[1]; // 
-            			if(data.equals(s_v_dada)) {
-            				//解密server 发来的密文
-            				String s_dada= AesUtil.decrypt(s_dada_chi, passwd);
-            				if(s_dada != null) {
-            					//把解密出明文发送给服务的
-            					bwrite.write(s_dada);
-            					bwrite.newLine();
-            					bwrite.flush();
-            					//最后等待server端验证，如果通过则继续长连接否则会断开
-            					
-            					
-            					//接受server端发送过来的公钥
-            					String p_key = bread.readLine();
-            					if(p_key != null) {
-            					    this.serverPublicKey = p_key;
-            					}
-            					
-            					//给server 发送客户端公钥
-            					bwrite.write(this.clientPubliKey);
-            					bwrite.newLine();
-            					bwrite.flush();
-            					
-            					this.setSoTimeout(0);//恢复正常的无超时读写
-            				}else {
-            					throw new EclcException("Eclc  failed! passwd is not agreement.");
-            				}
-            				
-            			}else {
-            				throw new EclcException("Eclc  failed! passwd is not agreement.");
-            			}
-            			
-            		}else {
-            			throw new EclcException("Eclc  failed! eclc server result null v_array.");
-            		}
-            		
-            	}else {
-            		throw new EclcException("Eclc  failed! eclc server result null result_data.");
-            	}
-            	
-            	
-			} catch (SocketException e) {
-				e.printStackTrace();
-				throw new EclcException("EclcServerSocket connection SocketException: " + e.getMessage());
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new EclcException("EclcServerSocket connection Exception: " + e.getMessage());
-			}
-        	
-        	
+		if(this.clientPubliKey == null || this.clientPubliKey.length() == 0) {
+			throw new EclcException("null certificate.");
 		}else {
-			throw new EclcException("EclcServerSocket refuse connection.");
+			if(this.isConnected()) {
+	        	try {
+	        		this.setSoTimeout(timeOut);//超时没有回复抛出EclcException异常
+	        		OutputStreamWriter os = new OutputStreamWriter(this.getOutputStream());
+	            	BufferedWriter bwrite = new BufferedWriter(os);
+	            	InputStreamReader ir = new InputStreamReader(this.getInputStream());
+	            	BufferedReader bread = new BufferedReader(ir);
+
+	            	// 1. 随机明文用passwd进行加密并发送出去。
+	            	String data = UUID.randomUUID().toString();
+	            	String data_chi = AesUtil.encrypt(data, passwd);
+	            	bwrite.write(data_chi);
+	            	bwrite.newLine();
+					bwrite.flush();
+
+	            	// 2. 等服务端解密后把明文返回  超时失败推出
+//	            	System.out.println("data=" + data);
+	            	String result_data = bread.readLine();
+	            	if(result_data != null) {
+	            		String[] v_array = result_data.split(";");
+	            		if(v_array != null && v_array.length ==2) {
+	            			String s_v_dada = v_array[0]; //
+	            			String s_dada_chi = v_array[1]; //
+	            			if(data.equals(s_v_dada)) {
+	            				//解密server 发来的密文
+	            				String s_dada= AesUtil.decrypt(s_dada_chi, passwd);
+	            				if(s_dada != null) {
+	            					//把解密出明文发送给服务的
+	            					bwrite.write(s_dada);
+	            					bwrite.newLine();
+	            					bwrite.flush();
+	            					//最后等待server端验证，如果通过则继续长连接否则会断开
+
+
+	            					//给server 发送客户端公钥 和connectId
+									String keyAndConnId = this.clientPubliKey+";"+this.connectionId;
+	            					bwrite.write(keyAndConnId);
+	            					bwrite.newLine();
+	            					bwrite.flush();
+
+
+	            					//接受server端发送过来的公钥
+	            					String p_key = bread.readLine();
+	            					if(p_key != null) {
+	            					    this.serverPublicKey = p_key;
+	            					}
+
+	            					this.setSoTimeout(0);//恢复正常的无超时读写
+	            				}else {
+	            					throw new EclcException("Eclc  failed! passwd is not agreement.");
+	            				}
+
+	            			}else {
+	            				throw new EclcException("Eclc  failed! passwd is not agreement.");
+	            			}
+
+	            		}else {
+	            			throw new EclcException("Eclc  failed! eclc server result null v_array.");
+	            		}
+
+	            	}else {
+	            		throw new EclcException("Eclc  failed! eclc server result null result_data.");
+	            	}
+
+
+				} catch (SocketException e) {
+					e.printStackTrace();
+					throw new EclcException("EclcServerSocket connection SocketException: " + e.getMessage());
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new EclcException("EclcServerSocket connection Exception: " + e.getMessage());
+				}
+
+
+			}else {
+				throw new EclcException("EclcServerSocket refuse connection.");
+			}
 		}
+
 	}
 
 	public String getServerPublicKey() {
@@ -185,7 +193,7 @@ public class EclcSocket extends Socket {
 	public void setServerPublicKey(String serverPublicKey) {
 		this.serverPublicKey = serverPublicKey;
 	}
-	
-	
+
+
 
 }

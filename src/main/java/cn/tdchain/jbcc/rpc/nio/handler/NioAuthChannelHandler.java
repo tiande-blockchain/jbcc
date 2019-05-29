@@ -1,4 +1,9 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.jbcc.rpc.nio.handler;
+
 import cn.tdchain.cipher.rsa.AesUtil;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,10 +19,13 @@ public class NioAuthChannelHandler extends ChannelInboundHandlerAdapter {
     private Promise<Map<NioHandshakerType, String>> promise = null;
     private String token;
     private String publicKey;
-    public NioAuthChannelHandler(Promise<Map<NioHandshakerType, String>> promise, String token, String publicKey){
+    private String connectionId;
+
+    public NioAuthChannelHandler(Promise<Map<NioHandshakerType, String>> promise, String token, String connectionId, String publicKey) {
         this.promise = promise;
         this.token = token;
         this.publicKey = publicKey;
+        this.connectionId = connectionId;
     }
 
     @Override
@@ -40,10 +48,11 @@ public class NioAuthChannelHandler extends ChannelInboundHandlerAdapter {
             // 第二次握手逻辑,接收服务端公钥
             handshakerMap.put(NioHandshakerType.SERVER_PUBLIC_KEY, authSequence);
             handshakerMap.put(NioHandshakerType.HAND_3, NioHandshakerType.HAND_3.name());
-            // 发送自己的公钥给服务端
-            ChannelFuture future = ctx.writeAndFlush(publicKey);
+            // 发送自己的公钥和connectId给服务端
+            String keyAndConnectId = publicKey + ";" + connectionId;
+            ChannelFuture future = ctx.writeAndFlush(keyAndConnectId);
             future.addListener(f -> {
-                if(f.isSuccess()){
+                if (f.isSuccess()) {
                     promise.trySuccess(handshakerMap);
                 } else {
                     promise.tryFailure(new NioRpcClientException("auth handshaker failed!"));

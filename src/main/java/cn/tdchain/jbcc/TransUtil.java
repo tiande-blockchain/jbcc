@@ -4,28 +4,25 @@
  */
 package cn.tdchain.jbcc;
 
+import cn.tdchain.Trans;
+import cn.tdchain.cipher.rsa.Sha256Util;
 import cn.tdchain.cipher.utils.HashCheckUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-
-import cn.tdchain.Trans;
-import cn.tdchain.cipher.rsa.Sha256Util;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Trans util
- *
  * @author xiaoming
- * @date: 2018年10月31日 下午3:33:26
+ * 2019年4月18日
  */
 public class TransUtil {
+    public final static int HASH_LENGTH = 64;
 
     /**
-     * @throws
-     * @Title: getTransHash
-     * @Description: get a trans hash
-     * @param: @param tx
-     * @param: @return
-     * @return: String
+     * get a trans hash
+     * @param tx
+     * @return String
      */
     public static String getTransHash(Trans tx) {
         JSONObject txJsonO = JSONObject.parseObject(JSON.toJSONString(tx));
@@ -33,6 +30,7 @@ public class TransUtil {
         txJsonO.remove("blockHash");//不包含hash字段
         txJsonO.remove("connectionId");//不包含connectionId字段
         txJsonO.remove("status");//不包含status字段
+        txJsonO.remove("account");//不包含account字段
         txJsonO.remove("msg");//不包含msg字段
         txJsonO.remove("index");//不包含index字段
         txJsonO.remove("preHash");//不包含preHash字段
@@ -45,54 +43,77 @@ public class TransUtil {
     }
 
     /**
-     * 根据heightHash 获取hash
-     * @param heightHash
-     * @return
-     * @throws Exception
+     * Description: 解析块高度：64位hash"+"height
+     * @param hashHeight
+     * @return Long
      */
-    public static Long getHeightByHeightHash(String heightHash) throws Exception {
-        if (heightHash != null && heightHash.length() > 0) {
-            String[] str = heightHash.split("_");
-            if (str.length == 2) {
-                return Long.valueOf(str[0]);
-            }
-            throw new Exception("get height by heightHash=" + heightHash + " error");
+    public static Long getHeight(String hashHeight) {
+        if (StringUtils.isBlank(hashHeight) || hashHeight.length() <= HASH_LENGTH)
+            throw new RuntimeException("getHeight: split hash height exception, hash string: " + hashHeight);
+
+        Long height = 0L;
+        try {
+            height = Long.valueOf(hashHeight.substring(HASH_LENGTH));
+        } catch (Exception e) {
+            throw new RuntimeException("getHeight: split hash height exception, hash string: " + hashHeight);
         }
-        throw new Exception("get height by heightHash=" + heightHash + " error, heightHash is null or empty");
+        return height;
+    }
+
+    public static Long getHeight(Trans trans) {
+        if (trans == null)
+            throw new RuntimeException("trans is null");
+
+        String hashHeight = trans.getHash();
+        return getHeight(hashHeight);
     }
 
     /**
-     * 根据heightHash 获取height
-     * @param heightHash
-     * @return
-     * @throws Exception
+     * Description: 解析hash串：64位hash"+"height
+     * @param hashHeight
+     * @return String
      */
-    public static String getHashByHeightHash(String heightHash) throws Exception {
-        if (heightHash != null && heightHash.length() > 0) {
-            String[] str = heightHash.split("_");
-            if (str.length == 2) {
-                return str[1];
-            }
-            return heightHash;
+    public static String getHash(String hashHeight) {
+        if (StringUtils.isBlank(hashHeight) || hashHeight.length() <= HASH_LENGTH)
+            throw new RuntimeException("split hash string exception, hash string: " + hashHeight);
+
+        String hash = "";
+        try {
+            hash = hashHeight.substring(0, HASH_LENGTH);
+        } catch (Exception e) {
+            throw new RuntimeException("getHeight: split hash string exception, hash string: " + hashHeight);
         }
-        throw new Exception("get hash by heightHash=" + heightHash + " error, heightHash is null or empty");
+
+        return hash;
+    }
+
+    public static String getHash(Trans trans) {
+        if (trans == null)
+            throw new RuntimeException("trans is null");
+
+        String hashHeight = trans.getHash();
+        return getHash(hashHeight);
     }
 
     /**
-     * 设置heightHash
-     * @param height
+     * hash 规则：64位hash "+" height
      * @param hash
-     * @return
-     * @throws Exception
+     * @param height
+     * @return String
      */
-    public static String setHeightHash(Long height, String hash) throws Exception {
-        if (height == null || height <= 0) {
-            throw new Exception("set heightHash is error, height=" + height + " is null or less than 0");
-        }
-        if (!HashCheckUtil.hashCheck(hash)) {
-            throw new Exception("set heightHash is error, hash=" + hash + " is null or illegal");
-        }
-        return height + "_" + hash;
+    public static String hashHeight(String hash, Long height) {
+        if (StringUtils.isBlank(hash) || !HashCheckUtil.hashCheck(hash))
+            throw new TransInfoException("trans hash is error, hash=" + hash);
+
+        if (height == null || height < 0)
+            throw new TransInfoException("block height is null or less zero");
+
+        return hash.concat(height + "");
     }
 
+    public static void main(String[] args) {
+        String str = "937d45babcf5fac3a3b889957cfd706c8ce1d1e5542acecfca8e1764a3e068b2";
+        System.out.println(getHeight(str));
+        System.out.println(getHash(str));
+    }
 }

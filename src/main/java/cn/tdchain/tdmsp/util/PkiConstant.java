@@ -39,7 +39,7 @@ public final class PkiConstant {
      * Get algorithm by cipher type.
      * 
      * @param cipherType RSA/SM2/ECC
-     * @return algorithm
+     * @return String
      */
     public static String getAlgorithm(String cipherType) {
         if (cipherType == null) {

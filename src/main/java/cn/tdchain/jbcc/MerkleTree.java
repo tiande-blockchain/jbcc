@@ -18,7 +18,7 @@ import cn.tdchain.cipher.rsa.Sha256Util;
 /**
  * Merkle Utility.
  * @author xiaoming
- * @date: 2018年10月31日 上午11:47:14
+ * 2019年4月18日
  */
 public class MerkleTree {
 
@@ -46,11 +46,10 @@ public class MerkleTree {
     /**
      * Use this constructor when you have already constructed the tree of Nodes (from
      * deserialization).
-     * 
-     * @param treeRoot BinaryNode
-     * @param numNodes int
-     * @param height int
-     * @param leafSignatures List<String>
+     * @param treeRoot
+     * @param numNodes
+     * @param height
+     * @param leafSignatures
      */
     public MerkleTree(BinaryNode treeRoot, int numNodes, int height,
             List<String> leafSignatures) {
@@ -63,7 +62,6 @@ public class MerkleTree {
     /**
      * Serialization format:
      * (magicheader:int)(numnodes:int)[(nodetype:byte)(siglength:int)(signature:[]byte)].
-     * 
      * @return byte[]
      */
     public byte[] serialize() {

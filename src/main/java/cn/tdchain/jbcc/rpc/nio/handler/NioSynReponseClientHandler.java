@@ -1,5 +1,10 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.jbcc.rpc.nio.handler;
 
+import cn.tdchain.cipher.utils.StringUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.concurrent.Promise;
@@ -16,16 +21,10 @@ public class NioSynReponseClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String message = (String) msg;
+        if (StringUtils.isBlank(message)) {
+            return;
+        }
         this.promise.trySuccess(message);
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        ctx.close();
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
     }
 
     public Promise<String> getPromise() {

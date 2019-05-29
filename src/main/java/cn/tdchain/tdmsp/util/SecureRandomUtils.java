@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.tdmsp.util;
 
 import java.security.SecureRandom;
@@ -12,9 +16,6 @@ public final class SecureRandomUtils {
 
     private static final SecureRandom SECURE_RANDOM;
 
-    // Taken from BitcoinJ implementation
-    // https://github.com/bitcoinj/bitcoinj/blob/
-    // 3cb1f6c6c589f84fe6e1fb56bf26d94cccc85429/core/src/main/java/org/bitcoinj/core/Utils.java#L573
     private static int isAndroid = -1;
 
     static {

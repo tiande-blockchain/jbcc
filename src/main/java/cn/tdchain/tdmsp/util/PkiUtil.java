@@ -53,7 +53,8 @@ import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 
-import cn.tdchain.tdmsp.ca.config.KeyStoreParam;
+import cn.tdchain.cipher.utils.CipherUtil;
+import cn.tdchain.tdmsp.ca.config.SystemConfig;
 
 /**
  * Utility.
@@ -131,11 +132,10 @@ public final class PkiUtil {
 
     /**
      * Create encryption key pair.
-     * 
-     * @return encryption key pair
-     * @throws NoSuchAlgorithmException exception
-     * @throws NoSuchProviderException exception
-     * @throws InvalidAlgorithmParameterException exception
+     * @return KeyPair
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchProviderException
+     * @throws InvalidAlgorithmParameterException
      */
     public static KeyPair generateEcEncryptKeyPair()
         throws NoSuchAlgorithmException, NoSuchProviderException,
@@ -216,14 +216,15 @@ public final class PkiUtil {
     /**
      * Get encoded X509CertificateHolder.
      * 
-     * @param subPubKeyInfo SubjectPublicKeyInfo
-     * @param x500Name X500Name
-     * @param validTime cert valid time by year
-     * @param subject X500Name
-     * @param privateKey PrivateKey
-     * @param algorithm SHA256withRSA/SHA256withECDSA/SM3withSM2
-     * @return encoded X509CertificateHolder
-     * @throws Exception exception
+     * @param subPubKeyInfo
+     * @param x500Name
+     * @param validTime
+     * @param subject
+     * @param privateKey
+     * @param algorithm
+     * @param rootPublickey
+     * @return byte[]
+     * @throws Exception
      */
     public static byte[] getEncodedHolder(SubjectPublicKeyInfo subPubKeyInfo,
                                           X500Name x500Name, int validTime,
@@ -384,7 +385,7 @@ public final class PkiUtil {
      * @param keyStoreType key store type: JCELS, PKCS12
      * @throws Exception exception
      */
-    public static void saveToKeystore(KeyStoreParam param,
+    public static void saveRootToKeystore(SystemConfig param,
                                       PrivateKey privateKey,
                                       String keyStoreType)
         throws Exception {
@@ -405,35 +406,37 @@ public final class PkiUtil {
             //保存根证书
             store.setCertificateEntry(param.getRootAlias(), chain[1]);
         }
-        store.setKeyEntry(param.getPrivateKeyAlias(), privateKey,
-                param.getPrivateKeyPassword().toCharArray(), chain); // 保存私钥
+        store.setKeyEntry(param.getRootAlias(), privateKey,
+                param.getRootPassword().toCharArray(), chain); // 保存私钥
 
-        File storeDir = new File(param.getPath());
+        File storeDir = new File(param.getRootKsPath());
         if (!storeDir.exists()) {
             storeDir.mkdirs();
         }
 
-        File storeFile = new File(param.getKsFilePath());
+        File storeFile = new File(param.getRootKsPath() + File.separator + param.getRootKsFileName());
         if (!storeFile.exists()) {
             storeFile.createNewFile();
 
             //不存在则创建
             try (FileOutputStream fos = new FileOutputStream(storeFile)) {
 
-                store.store(fos, param.getKsPassword().toCharArray()); // Keystore
+                store.store(fos, param.getRootPassword().toCharArray()); // Keystore
             }
             
             //保证证书到文件中，以cer格式
             if(chain.length == 1) {
                 //根证书
-                saveCertToFile(param.getPath()+"rootCert.cer",chain[0]);
+            	String rootKsName = param.getRootKsFileName().substring(0, param.getRootKsFileName().lastIndexOf("."));
+                saveCertToFile(param.getRootKsPath() + rootKsName + "_Cert.cer", chain[0]);
             }
             if(chain.length > 1) {
                 //OU证书
-                saveCertToFile(param.getPath()+"ouCert.cer",chain[0]);
+            	String certKsName = param.getCertKsFileName().substring(0, param.getCertKsFileName().lastIndexOf("."));
+				saveCertToFile(param.getCertKsPath() + certKsName + "_Cert.cer", chain[0]);
                 
                 //根证书
-                saveCertToFile(param.getPath()+"rootCert.cer",chain[1]);
+//                saveCertToFile(param.getRootKsPath()+"rootCert.cer",chain[1]);
             }
             
         }else {
@@ -443,20 +446,78 @@ public final class PkiUtil {
         
 
     }
+    
+	public static void saveCertToKeystore(SystemConfig param, PrivateKey privateKey, String keyStoreType)
+			throws Exception {
+
+		KeyStore store = null;
+		if (PkiConstant.PKCS12.equals(keyStoreType)) {
+			store = KeyStore.getInstance(PkiConstant.PKCS12, BouncyCastleProvider.PROVIDER_NAME);
+		} else {
+			store = KeyStore.getInstance(PkiConstant.JCEKS);
+		}
+		store.load(null, null);
+
+		X509Certificate[] chain = param.getChain();
+
+		store.setCertificateEntry(param.getCertAlias(), chain[0]); // 保存证书
+		if (chain.length > 1 && null != param.getCertAlias()) {
+        //保存根证书
+			store.setCertificateEntry(param.getCertAlias(), chain[1]);
+		}
+		store.setKeyEntry(param.getCertAlias(), privateKey, param.getCertPassword().toCharArray(), chain); // 保存私钥
+
+		File storeDir = new File(param.getCertKsPath());
+		if (!storeDir.exists()) {
+			storeDir.mkdirs();
+		}
+
+		File storeFile = new File(param.getCertKsPath() + File.separator + param.getCertKsFileName());
+		if (!storeFile.exists()) {
+			storeFile.createNewFile();
+
+            //不存在则创建
+			try (FileOutputStream fos = new FileOutputStream(storeFile)) {
+
+				store.store(fos, param.getCertPassword().toCharArray()); // Keystore
+			}
+
+            //保证证书到文件中，以cer格式
+			if (chain.length == 1) {
+                //根证书
+				String rootKsName = param.getRootKsFileName().substring(0, param.getRootKsFileName().lastIndexOf("."));
+                saveCertToFile(param.getRootKsPath() + rootKsName + "_Cert.cer", chain[0]);
+			}
+			if (chain.length > 1) {
+                //OU证书
+				String certKsName = param.getCertKsFileName().substring(0, param.getCertKsFileName().lastIndexOf("."));
+				saveCertToFile(param.getCertKsPath() + certKsName + "_Cert.cer", chain[0]);
+
+                //根证书
+//				saveCertToFile(param.getCertKsPath() + "rootCert.cer", chain[1]);
+			}
+
+		} else {
+              // key store文件已经存在，什么都不干!
+
+		}
+
+	}
 
     /**
      * Get enroll keystore.
      * 
-     * @param filePath keystore path + keystore file name
-     * @param ksPassword keystore password
-     * @param keyStoreType key store type: JCELS, PKCS12
-     * @return keystore
-     * @throws Exception exception
+     * @param filePath
+     * @param ksPassword
+     * @param keyStoreType
+     * @return KeyStore
+     * @throws Exception
      */
     public static KeyStore getKeyStore(String filePath, String ksPassword,
                                        String keyStoreType)
         throws Exception {
 
+    	ksPassword = CipherUtil.zeroSuffix(ksPassword);
         KeyStore store = null;
         File storeFile = new File(filePath);
         if (!storeFile.exists()) {

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.cipher.utils;
 
 import java.nio.charset.Charset;

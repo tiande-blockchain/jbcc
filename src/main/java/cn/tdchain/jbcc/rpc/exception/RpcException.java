@@ -6,7 +6,6 @@ package cn.tdchain.jbcc.rpc.exception;
 
 /**
  * TDRpcException.
- * 
  * @version 2.0
  * @author Xiaoming 2017-12-07
  */
@@ -16,7 +15,6 @@ public class RpcException extends RuntimeException {
 
     /**
      * RPC excepstion.
-     * 
      * @param msg String
      */
     public RpcException(String msg) {

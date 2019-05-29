@@ -43,9 +43,9 @@ public final class ByteUtils {
     /**
      * To bytes with padding.
      * 
-     * @param value BigInteger
-     * @param length int
-     * @return bytes
+     * @param value
+     * @param length
+     * @return byte[]
      */
     public static byte[] toBytesPadded(BigInteger value, int length) {
         byte[] result = new byte[length];

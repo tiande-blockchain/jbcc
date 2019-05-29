@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.jbcc.net.nio;
 
 import cn.tdchain.cipher.Cipher;
@@ -13,16 +17,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author murong
- * @Description: 异步提交请求消息
- * @date:上午10:59:25
+ * Description: 异步提交请求消息
+ * @author xiaoming
+ * 2019年4月18日
  */
 public class NioResphone {
     private NioTask task;
 
     private String ip;
 
-    private int workerNum = 3;// 工人数，默认3名.
+    private int workerNum = 1;// 工人数，默认1名.
 
     private NioResphonePool pool;
 
@@ -91,19 +95,18 @@ public class NioResphone {
     }
 
     /**
+     * Description: 根据消息id弹出消息结果，如果没有则返回空。
      * @param messageId
      * @return
-     * @throws
-     * @Description: 根据消息id弹出消息结果，如果没有则返回空。
      */
     public RPCResult poll(String messageId) {
         return this.pool.poll(messageId);
     }
 
     /**
+     * Description: 返回结果池
      * @author xiaoming
-     * @Description: 返回结果池
-     * @date:上午10:59:04
+     * 2019年4月18日
      */
     public class NioResphonePool {
         private NioTask task;
@@ -117,25 +120,20 @@ public class NioResphone {
         private ConcurrentHashMap<String, RPCResult> resphonePool = new ConcurrentHashMap<String, RPCResult>();
 
         /**
+         * Description: 根据消息id获取返回结果对象
          * @param messageId
          * @return
-         * @throws
-         * @Description: 根据消息id获取返回结果对象
          */
         public RPCResult poll(String messageId) {
             try {
-//				synchronized(resphonePool) {
                 return resphonePool.remove(messageId);
-//				}
             } catch (Exception e) {
             }
             return null;
         }
 
         public synchronized void add(Map<String, RPCResult> connectionMap) {
-//			synchronized(resphonePool) {
             resphonePool.putAll(connectionMap);
-//			}
         }
 
         public void stop() {
@@ -149,8 +147,8 @@ public class NioResphone {
         }
 
         /**
-         * @throws
-         * @Description: 异步扫描过时的结果对象
+         * Description: 异步扫描过时的结果对象
+         * @param timeOut
          */
         private void checkTimeOut(long timeOut) {
             new Thread(() -> {
@@ -158,8 +156,6 @@ public class NioResphone {
                     if (status) {
                         long now_time = System.currentTimeMillis();
                         try {
-//								List<String> messageIds = new ArrayList<String>();
-
                             /** 异常类型消息检查 */
                             RPCResult error_r = resphonePool.remove(RPCResult.PRC_RESULT_DESCRYPT_ERROR);
                             if ((error_r != null) && (error_r.getType() == RPCResult.ResultType.msg_error)) {

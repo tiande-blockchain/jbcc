@@ -22,10 +22,9 @@ public class NioRpcSynResponseClient extends NioAbstractClient {
 
     /**
      * Send message and get response.
-     *
-     * @param message message
-     * @return response message
-     * @throws InterruptedException InterruptedException
+     * @param message
+     * @return String
+     * @throws InterruptedException
      */
     public synchronized String sendAndReturn(String message) throws InterruptedException {
         return sendAndReturn(message, 1000);
@@ -33,10 +32,10 @@ public class NioRpcSynResponseClient extends NioAbstractClient {
 
     /**
      * Send message and get response.
-     *
-     * @param message message
-     * @return response message
-     * @throws InterruptedException InterruptedException
+     * @param message
+     * @param timeMillis
+     * @return String
+     * @throws InterruptedException
      */
     public synchronized String sendAndReturn(String message, long timeMillis) throws InterruptedException {
         if (message == null) {
@@ -44,6 +43,10 @@ public class NioRpcSynResponseClient extends NioAbstractClient {
         }
         Channel channel = this.nioRpcClient.getChannel();
         NioSynReponseClientHandler nioSynReponseClientHandler = channel.pipeline().get(NioSynReponseClientHandler.class);
+        if(nioSynReponseClientHandler == null) {
+        	return null;
+        }
+        
         Promise<String> oldPromise = nioSynReponseClientHandler.getPromise();
         if (oldPromise != null && !oldPromise.isDone()) {
             try {

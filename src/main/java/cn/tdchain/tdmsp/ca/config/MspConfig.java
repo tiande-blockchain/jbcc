@@ -8,8 +8,7 @@ package cn.tdchain.tdmsp.ca.config;
 import java.util.Properties;
 
 /**
- * 枚举单例
- * 参考：https://www.cnblogs.com/yangzhilong/p/6148639.html
+ * Description: 枚举单例
  * @version 1.0
  * @author jiating 2019-01-02
  */
@@ -79,7 +78,5 @@ public class MspConfig {
     public String getPrivateKeyPassword() {
         return prop.getProperty("tdchain.msp.local.privateKeyPassword");
     }
-
-
     
 }

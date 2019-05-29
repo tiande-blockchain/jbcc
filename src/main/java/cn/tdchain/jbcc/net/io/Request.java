@@ -1,17 +1,16 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.jbcc.net.io;
 
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -25,16 +24,15 @@ import cn.tdchain.jbcc.rpc.exception.RpcException;
 import cn.tdchain.jbcc.rpc.io.client.RpcClient;
 
 /**
- * @Description: 异步提交请求消息
+ * Description: 异步提交请求消息
  * @author xiaoming
- * @date:上午10:59:25
+ * 2019年4月18日
  */
 public class Request{
-//	private Executor executor = Executors.newFixedThreadPool(8000);
 	
 	private Task task;
 	
-	private int workerNum = 3;// 工人数，默认3名.
+	private int workerNum = 1;// 工人数，默认1名.
 	
 	private RequestPool pool;
 	
@@ -249,9 +247,9 @@ public class Request{
 
 
 	/**
-	 * @Description: 请求任务的消息池
+	 * Description: 请求任务的消息池
 	 * @author xiaoming
-	 * @date:上午10:59:04
+	 * 2019年4月18日
 	 */
 	public class RequestPool{
 		private boolean status = true;
@@ -266,10 +264,9 @@ public class Request{
 		
 
 		/**
-		 * @Description: 批量获取消息列表
-		 * @param maxSize 一次性获取最大数
+		 * Description: 批量获取消息列表
+		 * @param maxSize
 		 * @return
-		 * @throws
 		 */
 		public List<RPCMessage> getMsgList(int maxSize){
 			List<RPCMessage> msgList = new ArrayList<RPCMessage>(); 
@@ -283,7 +280,6 @@ public class Request{
 //					break;
 //				}
 			}
-//			System.out.println("queue.size=" + queue.size());
 			return msgList;
 		}
 

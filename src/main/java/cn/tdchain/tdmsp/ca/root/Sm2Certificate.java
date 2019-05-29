@@ -7,9 +7,7 @@ package cn.tdchain.tdmsp.ca.root;
 import java.security.KeyPair;
 import java.security.KeyStore;
 
-//import org.springframework.stereotype.Service;
-
-import cn.tdchain.tdmsp.ca.config.KeyStoreParam;
+import cn.tdchain.tdmsp.ca.config.SystemConfig;
 import cn.tdchain.tdmsp.util.PkiConstant;
 import cn.tdchain.tdmsp.util.PkiUtil;
 
@@ -20,26 +18,25 @@ import cn.tdchain.tdmsp.util.PkiUtil;
  * @version 2.0
  * @author Lijiating 2018-10-24
  */
-//@Service("sm2Cert")
 public class Sm2Certificate extends RsaCertificate {
 
     /**
      * Create root CA.
      */
     @Override
-    public void creatRootCA() {
+    public void creatRootCA(String ksPath, String passwd) {
 //        log.info("Create root CA by SM2.");
-        createRoot();
+        createRoot(ksPath, passwd);
     }
     
     @Override
-    public void creatOuCert(KeyStoreParam keyStoreParam) {
+    public void creatOuCert(SystemConfig keyStoreParam) {
 //        log.info("Create creatOrganizationCert with  keyStoreParam  by SM2.");
         creatOrganizationCert(keyStoreParam);
     }
     
     @Override
-    public void creatOuCert(KeyStoreParam keyStoreParam,KeyStore rootkeyStore) {
+    public void creatOuCert(SystemConfig keyStoreParam, KeyStore rootkeyStore) {
 //        log.info("Create creatOrganizationCert with keyStoreParam,rootkeyStore  by SM2.");
         creatOrganizationCert(keyStoreParam,rootkeyStore);
     }

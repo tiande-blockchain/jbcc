@@ -1,11 +1,15 @@
+/*
+ * Copyright (c) 2017 Beijing Tiande Technology Co., Ltd.
+ * All Rights Reserved.
+ */
 package cn.tdchain.jbcc.net.nio;
 
 import cn.tdchain.cipher.Cipher;
 import cn.tdchain.cipher.DataCipher;
 import cn.tdchain.cipher.Key;
+import cn.tdchain.jbcc.SoutUtil;
 import cn.tdchain.jbcc.net.nio.NioNet.NioTask;
 import cn.tdchain.jbcc.rpc.RPCMessage;
-
 import cn.tdchain.jbcc.rpc.nio.client.NioRpcClient;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -16,15 +20,15 @@ import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
+ * Description: 异步提交请求消息
  * @author xiaoming
- * @Description: 异步提交请求消息
- * @date:上午10:59:25
+ * 2019年4月18日
  */
 public class NioRequest {
 
     private NioTask task;
 
-    private int workerNum = 3;// 工人数，默认3名.
+    private int workerNum = 1;// 工人数，默认1名.
 
     private NioRequestPool pool;
 
@@ -107,7 +111,8 @@ public class NioRequest {
                                 error_num = close(error_num, client, e);
                             }
                             if (error_num > 5) {
-                                System.out.println("request task 被销毁");
+                                if (SoutUtil.isOpenSout())
+                                    System.out.println("request task 被销毁");
                                 task.stop();//可能出现网络异常，需要结束整个task任务。
                             }
                         }
@@ -124,13 +129,7 @@ public class NioRequest {
     }
 
     public void addRequest(RPCMessage msg) {
-        //顺序加密，8个节点就要单线程执行8次，效率太低。
         if (this.status) {
-            // 设置数字信封 目标机器的公钥被保存在clinet的属性中
-//            DataCipher data = new DataCipher(UUID.randomUUID().toString(), msg.getMsg(), this.key.getPrivateKey(),
-//                    this.serverPublicKey, this.cipher);
-//            msg.setMsg(JSON.toJSONString(data));// 更新密文发送
-
             pool.add(msg);
         }
     }
@@ -143,9 +142,9 @@ public class NioRequest {
 
 
     /**
+     * Description: 请求任务的消息池
      * @author xiaoming
-     * @Description: 请求任务的消息池
-     * @date:上午10:59:04
+     * 2019年4月18日
      */
     public class NioRequestPool {
         private boolean status = true;
@@ -160,10 +159,9 @@ public class NioRequest {
 
 
         /**
-         * @param maxSize 一次性获取最大数
+         * Description: 批量获取消息列表
+         * @param maxSize
          * @return
-         * @throws
-         * @Description: 批量获取消息列表
          */
         public List<RPCMessage> getMsgList(int maxSize) {
             List<RPCMessage> msgList = new ArrayList<RPCMessage>();
